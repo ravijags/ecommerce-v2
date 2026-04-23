@@ -5,11 +5,25 @@ const getAllProducts = async (req, res) => {
         const search = req.query.search || "";
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
+        const category = req.query.category || "";
+        const sort = req.query.sort || "";
 
         const skip = (page - 1) * limit;
-        const filter = search ? { name: { $regex: search, $options: "i"}} : {};
+        const filter = search  
+          ? { name: { $regex: search, $options: "i"}} : {};
         
+        if (category) {
+            filter.category = category;
+        }
+
+        let sortOption = {};
+        if (sort === "low") {
+            sortOption = {price: 1};
+        } else if ( sort === "high") {
+            sortOption = {price: -1};
+        }
         const products = await Product.find(filter)
+                         .sort(sortOption)
                          .skip(skip)
                          .limit(limit);
         
