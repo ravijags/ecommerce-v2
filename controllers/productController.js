@@ -7,6 +7,8 @@ const getAllProducts = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const category = req.query.category || "";
         const sort = req.query.sort || "";
+        const minPrice = req.query.minPrice || 0;
+        const maxPrice = req.query.maxPrice || Infinity;
 
         const skip = (page - 1) * limit;
         const filter = search  
@@ -22,6 +24,8 @@ const getAllProducts = async (req, res) => {
         } else if ( sort === "high") {
             sortOption = {price: -1};
         }
+
+        filter.price = { $gte: Number(minPrice), $lte: Number(maxPrice)};
         const products = await Product.find(filter)
                          .sort(sortOption)
                          .skip(skip)
