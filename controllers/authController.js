@@ -1,14 +1,18 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { validateRegister } = require("../utils/validators");
 
 const register = async (req, res) => {
    try{
      const {name, email, password} = req.body;
-     
-     if(!name || !email || !password) {
-        return res.status(400).json({message: "All fields are required"});
+
+     const errors = validateRegister(name, email, password);
+     if(errors.length > 0) {
+        return res.status(400).json({ errors: errors});
      }
+     
+    
      
      const existingUser = await User.findOne({ email });
      if(existingUser) {

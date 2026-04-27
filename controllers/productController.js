@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const { validateProduct } = require("../utils/validators");
 
 const getAllProducts = async (req, res) => {
     try {
@@ -61,8 +62,9 @@ const createProduct = async (req, res) => {
     try {
         const {name, description, price, stock, category} = req.body;
         
-        if(!name || !description || !price || !stock || !category) {
-            return res.status(400).json({message: "All fields are required"});
+        const errors = validateProduct(name, price, stock, category, description);
+        if(errors.length > 0) {
+            return res.status(400).json({ errors: errors});
         }
 
         const newProduct = new Product({
