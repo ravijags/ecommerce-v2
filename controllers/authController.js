@@ -1,18 +1,18 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { validateRegister } = require("../utils/validators");
+const { validationResult } = require("express-validator");
 
 const register = async (req, res) => {
    try{
-     const {name, email, password} = req.body;
+     
 
-     const errors = validateRegister(name, email, password);
-     if(errors.length > 0) {
-        return res.status(400).json({ errors: errors});
+     const errors = validationResult(req);
+     if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array()});
      }
      
-    
+    const { name, email, password } = req.body;
      
      const existingUser = await User.findOne({ email });
      if(existingUser) {
@@ -37,13 +37,15 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-         const {email, password} = req.body;
+         
 
-    if(!email || !password) {
-        return res.status(400).json({message: "both fields required"});
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array()});
     }
-
+    
+    const {email, password} = req.body;
+    
     const user = await User.findOne({ email});
 
     if(!user) {
