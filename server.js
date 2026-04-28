@@ -1,11 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-
+const { generalLimiter } = require("./middleware/rateLimiter");
 dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(generalLimiter);
 
 mongoose
   .connect(process.env.MONGO_URI)
