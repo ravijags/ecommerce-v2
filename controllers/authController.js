@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
    try{
      
 
@@ -31,11 +31,11 @@ const register = async (req, res) => {
 
      res.status(201).json({message: "User created"});
    } catch(error) {
-    res.status(500).json({error: error.message})
+    next(error);
    }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     try {
          
 
@@ -69,7 +69,7 @@ const login = async (req, res) => {
         
     }
 } catch(error) {
-    res.status(500).json({ error: error.message});
+    next(error);
 }
     
 };

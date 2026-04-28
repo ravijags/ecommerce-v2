@@ -2,7 +2,7 @@ const Cart = require("../models/Cart");
 
 const Product = require("../models/Product");
 
-const getCart = async (req, res) => {
+const getCart = async (req, res, next) => {
     try {
         const cart = await Cart.findOne({ user: req.user.id })
                                .populate("items.product");
@@ -12,11 +12,11 @@ const getCart = async (req, res) => {
 
         res.status(200).json({cart: cart})
     } catch (error) {
-        res.status(500).json({ error: error.message})
+        next(error);
     }
 };
 
-const addToCart = async (req, res) => {
+const addToCart = async (req, res, next) => {
     try {
         
         const { productId, quantity } = req.body;
@@ -54,11 +54,11 @@ const addToCart = async (req, res) => {
         res.status(200).json({ message: "Added to cart", cart});
 
     } catch (error) {
-        res.status(500).json({ error: error.message})
+        next(error);
     }
 };
 
-const removeFromCart = async (req, res) => {
+const removeFromCart = async (req, res, next) => {
     try {
         const cart = await Cart.findOne({user: req.user.id})
 
@@ -73,11 +73,11 @@ const removeFromCart = async (req, res) => {
             res.status(200).json({message: "item removed "});
         }
     } catch (error) {
-        res.status(500).json({error: error.message});
+        next(error);
     }
 };
 
-const clearCart = async (req, res) => {
+const clearCart = async (req, res, next) => {
     try {
         const cart  = await Cart.findOne({ user: req.user.id});
 
@@ -89,7 +89,7 @@ const clearCart = async (req, res) => {
             res.status(200).json({message: "cart cleared"});
         }
     } catch (error) {
-        res.status(500).json({error: error.message});
+        next(error);
     }
 };
 

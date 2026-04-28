@@ -2,7 +2,7 @@ const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 
-const placeOrder = async (req, res) => {
+const placeOrder = async (req, res, next) => {
      try {
         const { shippingAddress } = req.body;
 
@@ -49,11 +49,11 @@ const placeOrder = async (req, res) => {
 
         res.status(200).json({message: "order placed"});
      } catch(error) {
-        res.status(500).json({ error: error.message});
+        next(error);
      }
 };
 
-const getMyOrders = async (req, res) => {
+const getMyOrders = async (req, res, next) => {
     try {
         const orders = await Order.find({ user: req.user.id})
             .populate("items.product")
@@ -61,11 +61,11 @@ const getMyOrders = async (req, res) => {
         
         res.status(200).json({ order : orders});
     } catch (error) {
-        res.status(500).json({ error: error.message});
+        next(error);
     }
 };
 
-const getOneOrder = async (req, res) => {
+const getOneOrder = async (req, res, next) => {
     try {
         const order  = await Order.findById(req.params.id)
                                 .populate("items.product")
@@ -79,13 +79,13 @@ const getOneOrder = async (req, res) => {
 
         res.status(200).json({ order: order});
     } catch (error) {
-        res.status(500).json({ error: error.message});
+        next(error);
     }
 
     
 };
 
-const updateOrderStatus = async (req, res) => {
+const updateOrderStatus = async (req, res, next) => {
     try {
         const { status } = req.body;
         
@@ -107,7 +107,7 @@ const updateOrderStatus = async (req, res) => {
 
         res.status(200).json({ order: updatedOrder});
     } catch (error) {
-        res.status(500).json({ error: error.message});
+       next(error);
     }
 };
 

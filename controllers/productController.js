@@ -2,7 +2,7 @@ const Product = require("../models/Product");
 
 const { validationResult } = require("express-validator");
 
-const getAllProducts = async (req, res) => {
+const getAllProducts = async (req, res, next) => {
     try {
         const search = req.query.search || "";
         const page = parseInt(req.query.page) || 1;
@@ -41,11 +41,11 @@ const getAllProducts = async (req, res) => {
             totalPages: Math.ceil(total/limit),
         });
     } catch(error) {
-        res.status(500).json({error: error.message});
+        next(error);
     }
 };
 
-const getOneProduct = async (req, res) => {
+const getOneProduct = async (req, res, next) => {
     try {
         const product = await Product.findById(req.params.id);
         
@@ -55,11 +55,11 @@ const getOneProduct = async (req, res) => {
 
         res.status(200).json({ product: product});
     } catch (error) {
-        res.status(500).json({ error: error.message});
+        next(error);
     }
 };
 
-const createProduct = async (req, res) => {
+const createProduct = async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if(!errors.isEmpty()) {
@@ -85,11 +85,11 @@ const createProduct = async (req, res) => {
             product: newProduct,
         });
     } catch (error) {
-        res.status(500).json({ error: error.message});
+        next(error);
     }
 };
 
-const updateProduct = async (req, res) => {
+const updateProduct = async (req, res, next) => {
     try {
         
         const {name, description, price, stock, category } = req.body;
@@ -110,11 +110,11 @@ const updateProduct = async (req, res) => {
             
             });
     } catch (error) {
-        res.status(500).json({ error: error.message});
+        next(error);
     }
 };
 
-const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res, next) => {
     try {
                 
         const deletedProduct = await Product.findByIdAndDelete(req.params.id);
@@ -125,7 +125,7 @@ const deleteProduct = async (req, res) => {
 
         res.status(200).json({message: "product deleted successfully"});
     } catch (error) {
-        res.status(500).json({ error: error.message});
+        next(error);
     }
 };
 

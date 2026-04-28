@@ -18,11 +18,13 @@ mongoose
  const productRoutes = require("./routes/productRoutes");
  const cartRoutes = require("./routes/cartRoutes");
  const orderRoutes = require("./routes/orderRoutes");
+ const errorHandler = require("./middleware/errorMiddleware");
 
  app.use("/api/auth", authRoutes);
  app.use("/api/products", productRoutes);
  app.use("/api/cart", cartRoutes);
  app.use("/api/orders", orderRoutes );
+ app.use(errorHandler);
 
  const PORT = process.env.PORT || 3000;
 
