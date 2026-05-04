@@ -129,10 +129,38 @@ const deleteProduct = async (req, res, next) => {
     }
 };
 
+const uploadProductImage = async (req, res, next) => {
+    try {
+        
+        if (!req.file) {
+            return res.status(400).json({ error: "Please upload an image"});
+        }
+
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: "Product not found"});
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            { image: req.file.path},
+            {new: true},
+        );
+
+        res.status(200).json({
+            message: "Image upload successfully",
+            product: updatedProduct,
+        })
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllProducts,
     getOneProduct,
     createProduct,
     updateProduct,
     deleteProduct,
+    uploadProductImage,
 };
