@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const cloudinary = require("../config/cloudinary");
 
 const { validationResult } = require("express-validator");
 
@@ -141,16 +142,24 @@ const uploadProductImage = async (req, res, next) => {
             return res.status(404).json({ error: "Product not found"});
         }
 
+        const fileBase64 = req.file.buffer.toString("base64");
+        const dataURI = `data:${req.file.mimetype};base64,${fileBase64}`;
+
+        const result = await cloudinary.uploader.upload(dataURI, {
+            folder: "ecommerce-products",
+        });
+
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
-            { image: req.file.path},
+            { image: result.secure_url },
             {new: true},
         );
 
         res.status(200).json({
             message: "Image upload successfully",
+            imageUrl: result.secure_url,
             product: updatedProduct,
-        })
+        });
     } catch (error) {
         next(error);
     }
