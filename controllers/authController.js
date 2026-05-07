@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
+const { sendWelcomeEmail } = require("../utils/emailService");
 
 const register = async (req, res, next) => {
    try{
@@ -29,7 +30,13 @@ const register = async (req, res, next) => {
      
      await newUser.save();
 
-     res.status(201).json({message: "User created"});
+     try {
+        await sendWelcomeEmail(name, email);
+     } catch (emailError) {
+        console.log("Welcome email failed:", emailError.message);
+     }
+
+     res.status(201).json({message: "✔ Registered successfully!"});
    } catch(error) {
     next(error);
    }

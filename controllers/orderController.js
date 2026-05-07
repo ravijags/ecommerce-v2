@@ -1,6 +1,8 @@
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const { sendOrderConfirmationEmail } = require("../utils/emailService");
+const User = require("../models/User");
 
 const placeOrder = async (req, res, next) => {
      try {
@@ -47,7 +49,11 @@ const placeOrder = async (req, res, next) => {
         cart.items = [];
         await cart.save();
 
-        res.status(200).json({message: "order placed"});
+        const user = await User.findById(req.user.id);
+
+        await sendOrderConfirmationEmail(user.name, user.email, newOrder);
+
+        res.status(200).json({message: "✔ Order placed successfully!"});
      } catch(error) {
         next(error);
      }
