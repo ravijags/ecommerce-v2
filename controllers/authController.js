@@ -85,6 +85,10 @@ const login = async (req, res, next) => {
 
 const forgotPassword = async (req, res, next) => {
     try {
+        // Temporary debug
+        console.log("EMAIL_USER:", process.env.EMAIL_USER);
+        console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+        
         const { email } = req.body;
 
         if(!email) {
