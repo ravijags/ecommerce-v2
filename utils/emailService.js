@@ -62,6 +62,43 @@ const sendOrderConfirmationEmail = async (name, email, order) => {
     await transporter.sendMail(mailOptions);
 };
 
+const sendPasswordResetEmail = async (name, email, resetUrl) => {
+    const transporter = nodemailer.createTransport({
+        host:"smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
 
-module.exports = { sendWelcomeEmail, sendOrderConfirmationEmail};
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Password Reset Request",
+        html: `
+          <h>Password Reset</h>
+          <p>Hi ${name},</p>
+          <p>You requested to reset your password.</p>
+          <p>Click the link below to reset it:</p>
+          <a href="${resetUrl}" style="
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius:5px;
+            ">Reset Password</a>
+            <p>This link expires in <strong>15 minutes!</strong></p>
+            <p>If you did not request this ignore this email</p>
+            <br/>
+            <p>The Ecommerce Team</p>
+        `,
+    };
+
+    await transporter.sendMail(mailOptions);
+}
+
+
+module.exports = { sendWelcomeEmail, sendOrderConfirmationEmail, sendPasswordResetEmail};
 
