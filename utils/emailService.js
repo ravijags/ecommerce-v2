@@ -6,8 +6,9 @@ const nodemailer = require("nodemailer");
 const sendWelcomeEmail = async (name,email) => {
     const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
+    requireTLS: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -33,8 +34,9 @@ const sendWelcomeEmail = async (name,email) => {
 const sendOrderConfirmationEmail = async (name, email, order) => {
     const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
+    requireTLS: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -65,8 +67,9 @@ const sendOrderConfirmationEmail = async (name, email, order) => {
 const sendPasswordResetEmail = async (name, email, resetUrl) => {
     const transporter = nodemailer.createTransport({
         host:"smtp.gmail.com",
-        port: 465,
-        secure: true,
+        port: 587,
+        secure: false,
+        requireTLS: true,
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
