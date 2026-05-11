@@ -11,6 +11,7 @@ const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const errorHandler = require("./middleware/errorMiddleware");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ mongoose
  app.use("/api/products", productRoutes);
  app.use("/api/cart", cartRoutes);
  app.use("/api/orders", orderRoutes );
+ app.use("/api/payment", paymentRoutes);
  app.use(errorHandler);
 
  const PORT = process.env.PORT || 3000;
